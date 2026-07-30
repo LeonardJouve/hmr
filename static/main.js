@@ -6,4 +6,3 @@ if (import.meta.hot) {
 
 const element = document.getElementById("time");
 element.textContent = new Date().toString();
-

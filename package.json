@@ -21,7 +21,6 @@
     "dependencies": {
         "@hono/node-server": "^2.0.12",
         "@types/ws": "^8.18.1",
-        "chokidar": "^4.0.3",
         "hono": "^4.12.32",
         "ws": "^8.21.1"
     }

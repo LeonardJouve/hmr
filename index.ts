@@ -6,19 +6,21 @@ import type {WSContext} from "hono/ws";
 import {serve, upgradeWebSocket, type WebSocketLike, type WebSocketServerLike} from "@hono/node-server";
 import {serveStatic} from "@hono/node-server/serve-static";
 import {WebSocketServer} from "ws";
-import chokidar from "chokidar";
 
-const BASE_URL = path.join(process.cwd(), "static");
+const STATIC_DIR = path.join(process.cwd(), "static");
+const TEMPLATE_DIR = path.join(process.cwd(), "template");
+
+const isHotModuleHandeledFile = (file: string): Boolean => file.endsWith(".js");
 
 const app = new Hono();
 
 const hmrMiddleware: MiddlewareHandler = async (c, next) => {
-    if (!c.req.path.endsWith(".js")) {
+    if (!isHotModuleHandeledFile(c.req.path)) {
         return await next();
     }
 
-    const client = await fs.readFile(path.join(process.cwd(), "template", "client.js"), "utf-8");
-    const content = await fs.readFile(path.join(BASE_URL, c.req.path), "utf-8");
+    const client = await fs.readFile(path.join(TEMPLATE_DIR, "client.js"), "utf-8");
+    const content = await fs.readFile(path.join(STATIC_DIR, c.req.path), "utf-8");
 
     c.header("Content-Type", "application/javascript");
 
@@ -33,7 +35,7 @@ const hmrMiddleware: MiddlewareHandler = async (c, next) => {
 
 app.use(hmrMiddleware);
 
-app.use("*", serveStatic({root: BASE_URL}));
+app.use("*", serveStatic({root: STATIC_DIR}));
 
 const sockets = new Map<string, WSContext<WebSocketLike>>();
 
@@ -56,19 +58,28 @@ app.get(
     }),
 );
 
-const watcher = chokidar.watch(BASE_URL, {
-    ignored: (path, stats) => Boolean(stats?.isFile() && !path.endsWith('.js')),
-});
+const watch = async () => {
+    while (true) {
+        const event = await fs.watch(STATIC_DIR, { recursive: true }).next();
+        if (event.done) {
+            return;
+        }
 
-watcher.on("change", (file) => {
-    console.log(`${file} changed`);
+        const {eventType, filename} = event.value;
+        if (eventType !== "change" || !filename || !isHotModuleHandeledFile(filename)) {
+            continue;
+        }
 
-    const relative = path.relative(BASE_URL, file);
-    sockets.forEach((socket) => socket.send(JSON.stringify({
-        type: "file:changed",
-        file: `/${relative}`,
-    })));
-});
+        console.log(`${filename} changed`);
+
+        sockets.forEach((socket) => socket.send(JSON.stringify({
+            type: "file:changed",
+            file: `/${filename}`,
+        })));
+    }
+};
+
+watch();
 
 const wss = new WebSocketServer({noServer: true}) as WebSocketServerLike;
 

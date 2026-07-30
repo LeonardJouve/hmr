@@ -14,9 +14,6 @@ importers:
       '@types/ws':
         specifier: ^8.18.1
         version: 8.18.1
-      chokidar:
-        specifier: ^4.0.3
-        version: 4.0.3
       hono:
         specifier: ^4.12.32
         version: 4.12.32
@@ -173,17 +170,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  chokidar@4.0.3:
-    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
-    engines: {node: '>= 14.16.0'}
-
   hono@4.12.32:
     resolution: {integrity: sha512-XcuyW9qE2kJn07PkecMOBd5Vq/hMy7mmGw+idz1yblbg9N17ijJODrvPkn7/dwL3Kulj8LcRJ69DLOWf91dRUg==}
     engines: {node: '>=16.9.0'}
-
-  readdirp@4.1.2:
-    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
-    engines: {node: '>= 14.18.0'}
 
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
@@ -283,13 +272,7 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  chokidar@4.0.3:
-    dependencies:
-      readdirp: 4.1.2
-
   hono@4.12.32: {}
-
-  readdirp@4.1.2: {}
 
   typescript@7.0.2:
     optionalDependencies:
