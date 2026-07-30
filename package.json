@@ -17,5 +17,12 @@
         "@nubjs/types": ">=0.4.13 <=0.6.0",
         "@types/node": "^26",
         "typescript": "^7"
+    },
+    "dependencies": {
+        "@hono/node-server": "^2.0.12",
+        "@types/ws": "^8.18.1",
+        "chokidar": "^4.0.3",
+        "hono": "^4.12.32",
+        "ws": "^8.21.1"
     }
 }
